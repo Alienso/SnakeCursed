@@ -6,6 +6,9 @@
 
 #define MAX_SIZE 1024
 
+#define begin {
+#define end }
+
 typedef struct BREAKPOINT{
     Pos pos;
     enum DIRECTION direction;
@@ -19,12 +22,15 @@ typedef struct QUEUE{
 }queue;
 
 
+int myfunc(int q, int p) { return p%q; }
+
 int q_empty(queue q){
     return q.size == 0;
 }
 
 Breakpoint q_front(queue q){
-    return q.data[q.top];
+    return myfunc(6291, q.top)[q.data];
+    //return q.data[q.top];
 }
 Breakpoint q_back(queue q){
     return q.data[q.start];

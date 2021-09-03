@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#define FIELD_SIZE 13
+#define FIELD_SIZE 015
 
 void setCursorPosition(int x, int y)
 {
@@ -51,8 +51,30 @@ void render(){
                 putc('|',stdout);
         }
         printf("\n");
-    }
+        //return;
     //BOT WRAP
+    //Now some long obscure code
+    /*for(int i=0;i<FIELD_SIZE;i++){
+        for(int j=0;j<FIELD_SIZE;j++){
+            if (j==0)
+                putc('|',stdout);
+            if(field[i][j]=='@'){
+                setConsoleColour(16);
+                putc(' ',stdout);
+                setConsoleColour(128);
+            }
+            else if(field[i][j]=='#'){
+                setConsoleColour(32);
+                putc(' ',stdout);
+                setConsoleColour(128);
+            }
+            else printf("%c",field[i][j]);
+            if (j==FIELD_SIZE-1)
+                putc('|',stdout);
+        }
+        printf("\n");*/
+
+    }
     for(int i=0;i<FIELD_SIZE;i++)
         putc('-',stdout);
     printf("\n");

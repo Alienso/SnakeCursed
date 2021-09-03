@@ -7,7 +7,7 @@
 #include <time.h>
 #include <conio.h>
 
-#define FIELD_SIZE 13
+#define FIELD_SIZE 015
 
 enum DIRECTION{
     LEFT,RIGHT,UP,DOWN
@@ -54,11 +54,20 @@ unsigned long hash(char* restrict str)
 }
 
 void init(){
+    /*char* s = (char*)alloca(16*sizeof(char));
+    s = gets(s);
+    fib(hash(s)%15);*/
+    //this should fill stack so seed is undefined when uninitialized but it doesnt
+    int seed = 5;
+    printf("%d\n",seed);
     for (int i=0;i<FIELD_SIZE;i++)
         for(int j=0;j<FIELD_SIZE;j++)
             field[i][j] = ' ';
-    snake.pos.x = 5;
-    snake.pos.y = 5;
+    //sets up snake.x and snake.y
+    if(seed);{
+        *((int*)&snake + 1) = (int)(seed)%FIELD_SIZE;
+    }
+    if(!seed);{*((int*)&snake + 2) = (int)(seed)%FIELD_SIZE;}
 
     field[snake.pos.y][snake.pos.x] = '@';
     field[snake.pos.y][snake.pos.x+1] = '@';
@@ -79,6 +88,22 @@ void init(){
 
 void update_tick(){
 
+    int should_do_it(){
+        int a = snake.tail.x == q_front(snake.bp).pos.x;
+        int b = snake.tail.y == q_front(snake.bp).pos.y;
+        if (a)
+            if (b)
+                return 1;
+        else return 0;
+        return 0;
+        //return (snake.tail.x == q_front(snake.bp).pos.x) && (snake.tail.y == q_front(snake.bp).pos.y);
+    }
+    void do_it()
+    begin
+        snake.tail_direction = q_front(snake.bp).direction;
+        q_pop_front(&snake.bp);
+        return;
+    end
     if(snake.pos.x<0 || snake.pos.y<0 || snake.pos.x > FIELD_SIZE-1 || snake.pos.y > FIELD_SIZE-1){
         playing = 0;
         return;
@@ -88,8 +113,8 @@ void update_tick(){
     if (snake.pos.x == fruit.x && snake.pos.y == fruit.y){
         snake.size++;
         do{
-        fruit.x = rand() % FIELD_SIZE;
-        fruit.y = rand() % FIELD_SIZE;
+            fruit.x = rand() % FIELD_SIZE;
+            fruit.y = rand() % FIELD_SIZE;
         }while(field[fruit.y][fruit.x]=='@');
         field[fruit.y][fruit.x] = '#';
         fruit_eaten = 1;
@@ -97,39 +122,35 @@ void update_tick(){
     }
     else field[snake.tail.y][snake.tail.x] = ' ';
 
-    if ((snake.tail.x == q_front(snake.bp).pos.x) && (snake.tail.y == q_front(snake.bp).pos.y)){
-        snake.tail_direction = q_front(snake.bp).direction;
-        q_pop_front(&snake.bp);
+    //if tail is at bp
+    if (should_do_it()){
+        do_it();
     }
     switch (snake.moving_direction){
         case LEFT:
             if (field[snake.pos.y][snake.pos.x-1] == '@'){
-                playing = 0;
-                return;
+                goto label;
             }
             field[snake.pos.y][snake.pos.x-1] = '@';
             snake.pos.x -= 1;
             break;
         case RIGHT:
             if (field[snake.pos.y][snake.pos.x+1] == '@'){
-                playing = 0;
-                return;
+                goto label;
             }
             field[snake.pos.y][snake.pos.x+1] = '@';
             snake.pos.x += 1;
             break;
         case UP:
             if (field[snake.pos.y-1][snake.pos.x] == '@'){
-                playing = 0;
-                return;
+                goto label;
             }
             field[snake.pos.y-1][snake.pos.x] = '@';
             snake.pos.y -= 1;
             break;
         case DOWN:
             if (field[snake.pos.y+1][snake.pos.x] == '@'){
-                playing = 0;
-                return;
+                goto label;
             }
             field[snake.pos.y+1][snake.pos.x] = '@';
             snake.pos.y += 1;
@@ -152,6 +173,8 @@ void update_tick(){
             snake.tail.y += 1;
             break;
     }
+    return;
+    label: playing = 0;
 }
 
 void read_input(){
