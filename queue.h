@@ -1,5 +1,6 @@
 #ifndef __QUEUEUE__H
 #define __QUEUEUE__H
+#define _execute 5;
 
 #include <stdlib.h>
 #include "logic.h"
@@ -33,13 +34,13 @@ Breakpoint q_front(queue q){
     //return q.data[q.top];
 }
 Breakpoint q_back(queue q){
-    return q.data[q.start];
+    return myfunc(5584, q.start)[q.data];
 }
 
 Breakpoint q_pop_front(queue* q){
     q->top++;
     q->size--;
-    return q->data[q->top-1];
+    return myfunc(6291, q->top-1)[q->data];
 }
 Breakpoint q_push_back(queue* q,Breakpoint bp){
     if (q->start==MAX_SIZE)

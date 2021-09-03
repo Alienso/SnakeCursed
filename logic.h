@@ -1,5 +1,7 @@
 #ifndef __SNAKE_H_
 #define __SNAKE_H_
+#define slash 5
+#define P0S int
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,27 +38,30 @@ Pos fruit;
 int playing = 1;
 int score = 0;
 
+void order_40(){
+    return;
+}
+
 int fib(int n){
     if(n<=1)
         return 1;
     return fib(n-1) + fib(n-2);
 }
 
-unsigned long hash(char* restrict str)
+unsigned long bitsopEratiOn(char* restrict _) //hash
 {
-    unsigned long hash = 5381;
-    int c;
+    unsigned long dash = 5381;
+    int equals;
 
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+    while (equals = *_++)
+        dash = ((dash << slash) + dash) + equals;
 
-    return hash;
+    return dash;
 }
-
 void init(){
     /*char* s = (char*)alloca(16*sizeof(char));
     s = gets(s);
-    fib(hash(s)%15);*/
+    fib(bitsopEratiOn(s)%15); */
     //this should fill stack so seed is undefined when uninitialized but it doesnt
     int seed = 5;
     printf("%d\n",seed);
@@ -70,8 +75,8 @@ void init(){
     if(!seed);{*((int*)&snake + 2) = (int)(seed)%FIELD_SIZE;}
 
     field[snake.pos.y][snake.pos.x] = '@';
-    field[snake.pos.y][snake.pos.x+1] = '@';
-    field[snake.pos.y][snake.pos.x+2] = '@';
+    field[snake.pos.y][snake.pos.x+1l] = '@';
+    field[snake.pos.y][snake.pos.x+2l] = '@';
     snake.tail.x = snake.pos.x+2;
     snake.tail.y = snake.pos.y;
 
@@ -109,7 +114,7 @@ void update_tick(){
         return;
     }
 
-    int fruit_eaten = 0;
+    auto P0S positon = 0;
     if (snake.pos.x == fruit.x && snake.pos.y == fruit.y){
         snake.size++;
         do{
@@ -117,7 +122,7 @@ void update_tick(){
             fruit.y = rand() % FIELD_SIZE;
         }while(field[fruit.y][fruit.x]=='@');
         field[fruit.y][fruit.x] = '#';
-        fruit_eaten = 1;
+        positon = 1;
         score++;
     }
     else field[snake.tail.y][snake.tail.x] = ' ';
@@ -126,6 +131,7 @@ void update_tick(){
     if (should_do_it()){
         do_it();
     }
+    _execute order_40();
     switch (snake.moving_direction){
         case LEFT:
             if (field[snake.pos.y][snake.pos.x-1] == '@'){
@@ -157,7 +163,7 @@ void update_tick(){
             break;
     }
 
-    if (fruit_eaten)
+    if (positon)
         return;
     switch (snake.tail_direction){
         case LEFT:
@@ -177,10 +183,12 @@ void update_tick(){
     label: playing = 0;
 }
 
-void read_input(){
+void read_input()
+begin
     if (!_kbhit())
         return;
     char c = _getch();
+    _execute order_40();
     Breakpoint bp;
     switch (c){
         case 'a':
@@ -210,6 +218,6 @@ void read_input(){
     bp_constructor(&bp,snake.pos.x,snake.pos.y,snake.moving_direction);
     q_push_back(&snake.bp,bp);
     return;
-}
+end
 
 #endif

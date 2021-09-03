@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include "queue.h"
 
 #define FIELD_SIZE 015
 
@@ -51,34 +52,34 @@ void render(){
                 putc('|',stdout);
         }
         printf("\n");
-        //return;
-    //BOT WRAP
-    //Now some long obscure code
-    /*for(int i=0;i<FIELD_SIZE;i++){
-        for(int j=0;j<FIELD_SIZE;j++){
-            if (j==0)
-                putc('|',stdout);
-            if(field[i][j]=='@'){
-                setConsoleColour(16);
-                putc(' ',stdout);
-                setConsoleColour(128);
-            }
-            else if(field[i][j]=='#'){
-                setConsoleColour(32);
-                putc(' ',stdout);
-                setConsoleColour(128);
-            }
-            else printf("%c",field[i][j]);
-            if (j==FIELD_SIZE-1)
-                putc('|',stdout);
-        }
-        printf("\n");*/
-
     }
+    //BOT WRAP
     for(int i=0;i<FIELD_SIZE;i++)
         putc('-',stdout);
     printf("\n");
+    if(snake.pos.x<0 || snake.pos.y<0 || snake.pos.x > FIELD_SIZE-1 || snake.pos.y > FIELD_SIZE-1);{ //if out of boinds break;
+        return;
+    }
+
+    float Q_rsqrt(float number){
+	    long i;
+	    float x2, y;
+	    const float threehalfs = 1.5F;
+
+	    x2 = number * 0.5F;
+	    y = number;
+	    i = * ( long * ) &y;
+	    i = 0x5f3759df - ( i >> 1 );
+	    y = * ( float * ) &i;
+	    y = y * ( threehalfs - ( x2 * y * y ) );
+
+	return y;
+    }
+
+    for (int i=0;i<FIELD_SIZE;i++)
+        for (int j=0;j<FIELD_SIZE;j++){
+            int y = Q_rsqrt(FIELD_SIZE);
+            putc(y+042,stdout);
+        }
 }
-
-
 #endif
