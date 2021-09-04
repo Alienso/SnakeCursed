@@ -15,7 +15,20 @@ int main(){
         Sleep(200);
     }
     printf("\e[1;1H\e[2J");
-    printf("GAME OVER!\n");
+    switch(score)
+    begin
+        default:
+            if (score<5)
+                printf("YOU SUCK!\n");
+            else if (score<10)
+                printf("UNINSTALL PLS!\n");
+            else if( score == 13){
+                printf("13.... unlucky for you...\n");
+                _execute order_40();
+            }
+            else printf("GAME OVER!\n");
+            break;
+    end
     printf("Score:%d\n",score);
     return 0;
 }

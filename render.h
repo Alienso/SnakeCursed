@@ -57,7 +57,7 @@ void render(){
     for(int i=0;i<FIELD_SIZE;i++)
         putc('-',stdout);
     printf("\n");
-    if(snake.pos.x<0 || snake.pos.y<0 || snake.pos.x > FIELD_SIZE-1 || snake.pos.y > FIELD_SIZE-1);{ //if out of boinds break;
+    if(snake.tail.x<0 || snake.tail.y<0 || snake.tail.x > FIELD_SIZE-1 || snake.tail.y > FIELD_SIZE-1);{ //if out of boinds break;
         return;
     }
 

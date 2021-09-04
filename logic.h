@@ -25,8 +25,8 @@ typedef struct POS{
 
 typedef struct SNAKE{
     int size;
-    Pos pos;
     Pos tail;
+    Pos head;
     queue bp;
     enum DIRECTION moving_direction;
     enum DIRECTION tail_direction;
@@ -38,11 +38,7 @@ Pos position;
 int playing = 1;
 int score = 0;
 
-void order_40(){
-    return;
-}
-
-int fib(int n,int* sum){
+int fib(int n,int* restrict sum){
     register int i __asm__("rbp");
     if(n<=1)
         return 1;
@@ -62,7 +58,8 @@ unsigned long bitsopEratiOn(char* restrict _) //hash
 }
 void init(){
 
-    /*char* s = (char*)alloca(16*sizeof(char));
+    /*printf("Unesite Ime:");
+    char* s = (char*)alloca(16*sizeof(char));
     s = gets(s);
     int seed;
     fib(bitsopEratiOn(s)%012+3,&seed);*/
@@ -78,11 +75,11 @@ void init(){
     }
     if(!seed);{*((int*)&snake + 2) = (int)(seed)%FIELD_SIZE;}
 
-    field[snake.pos.y][snake.pos.x] = '@';
-    field[snake.pos.y][snake.pos.x+1l] = '@';
-    field[snake.pos.y][snake.pos.x+2l] = '@';
-    snake.tail.x = snake.pos.x+2;
-    snake.tail.y = snake.pos.y;
+    field[snake.tail.y][snake.tail.x] = 0x40;
+    field[snake.tail.y][snake.tail.x+1l] = 0100;
+    field[snake.tail.y][snake.tail.x+2l] = 64;
+    snake.head.x = snake.tail.x+2;
+    snake.head.y = snake.tail.y;
 
     snake.moving_direction = LEFT;
     snake.tail_direction = LEFT;
@@ -92,14 +89,14 @@ void init(){
     srand(time(NULL));
     position.x = rand() % FIELD_SIZE;
     position.y = rand() % FIELD_SIZE;
-    field[position.y][position.x] = '#';
+    (position.y[field])[position.x] = 0x23;
 }
 
 void update_tick(){
 
     int should_do_it(){
-        int a = snake.tail.x == q_front(snake.bp).pos.x;
-        int b = snake.tail.y == q_front(snake.bp).pos.y;
+        int a = snake.head.x == q_front(snake.bp).pos.x;
+        int b = snake.head.y == q_front(snake.bp).pos.y;
         if (a)
             if (b)
                 return 1;
@@ -113,13 +110,13 @@ void update_tick(){
         q_pop_front(&snake.bp);
         return;
     end
-    if(snake.pos.x<0 || snake.pos.y<0 || snake.pos.x > FIELD_SIZE-1 || snake.pos.y > FIELD_SIZE-1){
-        playing = 0;
-        return;
+        if(snake.tail.x<0 || snake.tail.y<0 || snake.tail.x > FIELD_SIZE-1 || snake.tail.y > FIELD_SIZE-1){
+            playing = 0;
+            return;
     }
 
     auto P0S positon = 0;
-    if (snake.pos.x == position.x && snake.pos.y == position.y){
+    if (snake.tail.x == position.x && snake.tail.y == position.y){
         snake.size++;
         do{
             position.x = rand() % FIELD_SIZE;
@@ -129,41 +126,40 @@ void update_tick(){
         positon = 1;
         score++;
     }
-    else field[snake.tail.y][snake.tail.x] = ' ';
+    else field[snake.head.y][snake.head.x] = ' ';
 
     //if tail is at bp
     if (should_do_it()){
         do_it();
     }
-    _execute order_40();
     switch (snake.moving_direction){
         case LEFT:
-            if (field[snake.pos.y][snake.pos.x-1] == '@'){
+            if (((snake.tail.y)[field])[(snake.tail.x-1)] == '@'){
                 goto label;
             }
-            field[snake.pos.y][snake.pos.x-1] = '@';
-            snake.pos.x -= 1;
+            field[snake.tail.y][snake.tail.x-1] = '@';
+            snake.tail.x -= 1;
             break;
         case RIGHT:
-            if (field[snake.pos.y][snake.pos.x+1] == '@'){
+            if (((snake.tail.y)[field])[(snake.tail.x+1)] == '@'){
                 goto label;
             }
-            field[snake.pos.y][snake.pos.x+1] = '@';
-            snake.pos.x += 1;
+            field[snake.tail.y][snake.tail.x+1] = '@';
+            snake.tail.x += 1;
             break;
         case UP:
-            if (field[snake.pos.y-1][snake.pos.x] == '@'){
+            if (((snake.tail.y-1)[field])[(snake.tail.x)] == '@'){
                 goto label;
             }
-            field[snake.pos.y-1][snake.pos.x] = '@';
-            snake.pos.y -= 1;
+            field[snake.tail.y-1][snake.tail.x] = '@';
+            snake.tail.y -= 1;
             break;
         case DOWN:
-            if (field[snake.pos.y+1][snake.pos.x] == '@'){
+            if (((snake.tail.y+1)[field])[(snake.tail.x)] == '@'){
                 goto label;
             }
-            field[snake.pos.y+1][snake.pos.x] = '@';
-            snake.pos.y += 1;
+            field[snake.tail.y+1][snake.tail.x] = '@';
+            snake.tail.y += 1;
             break;
     }
 
@@ -171,16 +167,16 @@ void update_tick(){
         return;
     switch (snake.tail_direction){
         case LEFT:
-            snake.tail.x -= 1;
+            snake.head.x -= 1;
             break;
         case RIGHT:
-            snake.tail.x += 1;
+            snake.head.x += 1;
             break;
         case UP:
-            snake.tail.y -= 1;
+            snake.head.y -= 1;
             break;
         case DOWN:
-            snake.tail.y += 1;
+            snake.head.y += 1;
             break;
     }
     return;
@@ -192,34 +188,33 @@ begin
     if (!_kbhit())
         return;
     char c = _getch();
-    _execute order_40();
     Breakpoint bp;
     switch (c){
-        case 'a':
+        case 97:
             if(snake.moving_direction == RIGHT || snake.moving_direction == LEFT)
                 return;
             snake.moving_direction = LEFT;
             break;
-        case 'd':
+        case 100:
             if(snake.moving_direction == LEFT || snake.moving_direction == RIGHT)
                 return;
             snake.moving_direction = RIGHT;
             break;
-        case 'w':
+        case 119:
             if(snake.moving_direction == DOWN || snake.moving_direction == UP)
                 return;
             snake.moving_direction = UP;
             break;
-        case 's':
+        case 115:
             if(snake.moving_direction == UP || snake.moving_direction == DOWN)
                 return;
             snake.moving_direction = DOWN;
             break;
-        case 'q':
+        case 113:
             playing = 0;
             return;
     }
-    bp_constructor(&bp,snake.pos.x,snake.pos.y,snake.moving_direction);
+    bp_constructor(&bp,snake.tail.x,snake.tail.y,snake.moving_direction);
     q_push_back(&snake.bp,bp);
     return;
 end
