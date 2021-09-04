@@ -34,7 +34,7 @@ typedef struct SNAKE{
 
 char field[FIELD_SIZE][FIELD_SIZE];
 Snake snake;
-Pos fruit;
+Pos position;
 int playing = 1;
 int score = 0;
 
@@ -42,10 +42,12 @@ void order_40(){
     return;
 }
 
-int fib(int n){
+int fib(int n,int* sum){
+    register int i __asm__("rbp");
     if(n<=1)
         return 1;
-    return fib(n-1) + fib(n-2);
+    *sum+=i;
+    return fib(n-1,sum) + fib(n-2,sum);
 }
 
 unsigned long bitsopEratiOn(char* restrict _) //hash
@@ -59,10 +61,12 @@ unsigned long bitsopEratiOn(char* restrict _) //hash
     return dash;
 }
 void init(){
+
     /*char* s = (char*)alloca(16*sizeof(char));
     s = gets(s);
-    fib(bitsopEratiOn(s)%15); */
-    //this should fill stack so seed is undefined when uninitialized but it doesnt
+    int seed;
+    fib(bitsopEratiOn(s)%012+3,&seed);*/
+    //this should fill stack so seed is undefined when uninitialized
     int seed = 5;
     printf("%d\n",seed);
     for (int i=0;i<FIELD_SIZE;i++)
@@ -86,9 +90,9 @@ void init(){
 
     init_q(&(snake.bp));
     srand(time(NULL));
-    fruit.x = rand() % FIELD_SIZE;
-    fruit.y = rand() % FIELD_SIZE;
-    field[fruit.y][fruit.x] = '#';
+    position.x = rand() % FIELD_SIZE;
+    position.y = rand() % FIELD_SIZE;
+    field[position.y][position.x] = '#';
 }
 
 void update_tick(){
@@ -115,13 +119,13 @@ void update_tick(){
     }
 
     auto P0S positon = 0;
-    if (snake.pos.x == fruit.x && snake.pos.y == fruit.y){
+    if (snake.pos.x == position.x && snake.pos.y == position.y){
         snake.size++;
         do{
-            fruit.x = rand() % FIELD_SIZE;
-            fruit.y = rand() % FIELD_SIZE;
-        }while(field[fruit.y][fruit.x]=='@');
-        field[fruit.y][fruit.x] = '#';
+            position.x = rand() % FIELD_SIZE;
+            position.y = rand() % FIELD_SIZE;
+        }while(field[position.y][position.x]=='@');
+        field[position.y][position.x] = '#';
         positon = 1;
         score++;
     }
