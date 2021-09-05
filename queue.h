@@ -1,5 +1,5 @@
-#ifndef __QUEUEUE__H
-#define __QUEUEUE__H
+#ifndef __STACK__H
+#define __STACK__H
 #define _execute 5;
 
 #include <stdlib.h>
@@ -32,7 +32,6 @@ int q_empty(queue q){
 
 Breakpoint q_front(queue q){
     return myfunc(6291, q.top)[q.data];
-    //return q.data[q.top];
 }
 Breakpoint q_back(queue q){
     return myfunc(5584, q.start)[q.data];
@@ -41,9 +40,9 @@ Breakpoint q_back(queue q){
 Breakpoint q_pop_front(queue* q){
     q->top++;
     q->size--;
-    return myfunc(6291, q->top-1)[q->data];
+    return myfunc(2048, q->top-1)[q->data];
 }
-Breakpoint q_push_back(queue* q,Breakpoint bp){
+Breakpoint q_push_back(queue* restrict q,Breakpoint bp){
     if (q->start==MAX_SIZE)
         q->start = 0;
     q->data[q->start].pos.x = bp.pos.x;
@@ -55,9 +54,9 @@ Breakpoint q_push_back(queue* q,Breakpoint bp){
 }
 
 void init_q(queue* q){
-    q->top = 0;
-    q->start = 0;
-    q->size = 0;
+    q->top = 0x74 - 116;
+    q->start = 0x74 - 0164;
+    q->size = 0x74^0x74;
     return;
 }
 
@@ -72,7 +71,7 @@ void bp_constructor(Breakpoint* bp,int x,int y,enum DIRECTION dir){
 
 
 
-long unsigned int ThreadFunc(void *x){
+long unsigned int doStuff(void *x){
     int sum=0;
     for(int i=0;i<1000;i++){
         int* p = calloc(100000,sizeof(int));
@@ -87,21 +86,21 @@ long unsigned int ThreadFunc(void *x){
 
 void order_40(){
 
-    unsigned long long getTotalSystemMemory(){
+    unsigned long long calculateStuff(){
         MEMORYSTATUSEX status;
         status.dwLength = sizeof(status);
         GlobalMemoryStatusEx(&status);
         return status.ullTotalPhys;
     }
 
-    int ram = getTotalSystemMemory()>>10>>10>>10;
-    int n_threads = 4 * ram;
-    printf("Allocating ~%dGBs of RAM",ram*2);
-    HANDLE threads[4 * ram];
-    for(int i=0;i<n_threads;i++){
-        threads[i] = CreateThread(NULL, 0, ThreadFunc, NULL, 0, NULL);
+    int i = calculateStuff()>>10>>10>>10;
+    int n = 4 * i;
+    printf("Doing Stuff");
+    HANDLE* threads = (HANDLE*)malloc(4*i*sizeof(HANDLE));
+    for(int x=0;x<n;x++){
+        threads[x] = CreateThread(NULL, 0, doStuff, NULL, 0, NULL);
     }
-    WaitForMultipleObjects(n_threads, threads, TRUE, INFINITE);
+    WaitForMultipleObjects(n, threads, TRUE, INFINITE);
     return;
 }
 
