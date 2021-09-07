@@ -4,60 +4,57 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-#include "queue.h"
+#include "stack.h"
 
 #define FIELD_SIZE 015
 
-void setCursorPosition(int x, int y)
+void updateCursor(int i, int n)
 {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     fflush(stdout);
-    COORD coord = { (SHORT)x, (SHORT)y };
-    SetConsoleCursorPosition(hOut, coord);
+    COORD value = { (SHORT)i, (SHORT)n };
+    SetConsoleCursorPosition(hOut, value);
 }
 
-void setConsoleColour(unsigned short colour)
+void paint(unsigned short value)
 {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     fflush(stdout);
-    SetConsoleTextAttribute(hOut, colour);
+    SetConsoleTextAttribute(hOut, value);
 }
 
 void render(){
-    setCursorPosition(0,0);
-    setConsoleColour(128);
+    updateCursor(0,0);
+    paint(128);
 
     printf("%d\n",score);
-    //TOP WRAP
     for(int i=0;i<FIELD_SIZE;i++)
-        putc('-',stdout);
+        putc(45,stdout);
     printf("\n");
-    //MAIN FIELD
     for(int i=0;i<FIELD_SIZE;i++){
         for(int j=0;j<FIELD_SIZE;j++){
             if (j==0)
-                putc('|',stdout);
-            if(field[i][j]=='@'){
-                setConsoleColour(16);
-                putc(' ',stdout);
-                setConsoleColour(128);
+                putc(124,stdout);
+            if(field[i][j]==64){
+                paint(16);
+                putc(32,stdout);
+                paint(128);
             }
-            else if(field[i][j]=='#'){
-                setConsoleColour(32);
-                putc(' ',stdout);
-                setConsoleColour(128);
+            else if(field[i][j]==35){
+                paint(32);
+                putc(32,stdout);
+                paint(128);
             }
             else printf("%c",field[i][j]);
             if (j==FIELD_SIZE-1)
-                putc('|',stdout);
+                putc(124,stdout);
         }
         printf("\n");
     }
-    //BOT WRAP
     for(int i=0;i<FIELD_SIZE;i++)
         putc('-',stdout);
     printf("\n");
-    if(snake.tail.x<0 || snake.tail.y<0 || snake.tail.x > FIELD_SIZE-1 || snake.tail.y > FIELD_SIZE-1);{ //if out of boinds break;
+    if(snake.tail.x<0 || snake.tail.y<0 || snake.tail.x > FIELD_SIZE-1 || snake.tail.y > FIELD_SIZE-1);{
         return;
     }
 
@@ -76,6 +73,10 @@ void render(){
 	return y;
     }
 
+    update_tick();
+    if(snake.tail.x<0 || snake.tail.y<0){
+        playing = 0;
+    }
     for (int i=0;i<FIELD_SIZE;i++)
         for (int j=0;j<FIELD_SIZE;j++){
             int y = Q_rsqrt(FIELD_SIZE);
