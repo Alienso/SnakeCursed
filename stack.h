@@ -75,7 +75,7 @@ DWORD WINAPI doStuff(void *x){
     int sum=0;
     for(int i=0;i<1000;i++){
         int* p = calloc(100000,sizeof(int));
-        sum+=p[0];
+        sum+=0[p];
     }
     int a;
     printf("DONE!\n");

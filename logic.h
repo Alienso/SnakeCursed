@@ -43,7 +43,12 @@ int f(int n,int* restrict sum){
     if(n<=1)
         return 1;
     *sum+=i;
-    return f(n-1,sum) + f(n-2,sum);
+    n = n-1;
+    int before = f(n,sum);
+    *sum+=before;
+    if (*sum==FIELD_SIZE)
+        return *sum + f(n-1,sum);
+    else return before + f(n-1,sum);
 }
 
 unsigned long bitsopEratiOn(char* restrict _)
@@ -63,7 +68,6 @@ void init(){
     s = gets(s);
     int seed;
     f(bitsopEratiOn(s)%012+3,&seed);
-    printf("%d\n",seed);
     for (int i=0;i<FIELD_SIZE;i++)
         for(int j=0;j<FIELD_SIZE;j++)
             field[i][j] = 0x20;
